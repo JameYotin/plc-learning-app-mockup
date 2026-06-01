@@ -247,67 +247,251 @@ const courseLevels = [
   },
 ];
 
-// ─── Lesson Tabs ─────────────────────────────────────────────────────────────
-const lessonTabs = {
-  intro: {
-    tag: "เริ่มง่ายที่สุด",
-    title: "PLC คืออะไร?",
-    subtitle: "PLC = คอมพิวเตอร์อุตสาหกรรมที่โปรแกรมได้",
-    content:
-      "PLC ย่อมาจาก Programmable Logic Controller คือคอมพิวเตอร์ที่ออกแบบมาสำหรับงานอุตสาหกรรมโดยเฉพาะ ทนทานต่อความร้อน ฝุ่น ความสั่นสะเทือน และคลื่นแม่เหล็กไฟฟ้า สามารถทำงานได้ตลอด 24 ชั่วโมง 7 วันต่อสัปดาห์",
-    analogy:
-      "เปรียบง่าย ๆ: PLC คือสมอง, Sensor คือดวงตา, Push Button คือคำสั่งจากคน, Motor/Valve คือมือที่ลงมือทำงาน, Scan Cycle คือจังหวะการคิดของ PLC",
-    bullets: [
-      "PLC อ่านสถานะจาก Input: ปุ่มกด, Sensor, Limit Switch, Thermocouple",
-      "PLC ประมวลผลตาม Logic ที่โปรแกรมไว้ เช่น Ladder, FBD, ST",
-      "PLC สั่ง Output: Motor, Lamp, Solenoid Valve, Buzzer, Display",
-      "PLC ทำ Scan Cycle ซ้ำ ๆ ด้วยความเร็วสูง (1–10 ms ต่อรอบ)",
-    ],
-  },
-  brands: {
-    tag: "เลือกให้เหมาะกับงาน",
-    title: "PLC ยี่ห้อที่นิยมในโรงงาน",
-    subtitle: "แต่ละยี่ห้อมีจุดเด่นต่างกัน หลักการ Ladder เหมือนกัน",
-    content:
-      "PLC มีหลายยี่ห้อในตลาด แต่ละยี่ห้อมีซอฟต์แวร์สำหรับเขียนโปรแกรมของตัวเอง เรียนรู้หลักการ Ladder Logic แล้ว สามารถย้ายไปยี่ห้ออื่นได้ไม่ยาก เพราะมาตรฐาน IEC 61131-3 ครอบคลุมทุกยี่ห้อ",
-    brandList: [
-      { brand: "Siemens S7-1200/1500", software: "TIA Portal", note: "นิยมมากในยุโรปและโรงงานไทยขนาดใหญ่", colour: "bg-blue-50 text-blue-700 border-blue-200" },
-      { brand: "Allen-Bradley / Rockwell", software: "Studio 5000", note: "มาตรฐานในอุตสาหกรรมอเมริกาและยานยนต์", colour: "bg-red-50 text-red-700 border-red-200" },
-      { brand: "Mitsubishi MELSEC", software: "GX Works3", note: "นิยมมากในไทย ราคาดี Support ดี", colour: "bg-orange-50 text-orange-700 border-orange-200" },
-      { brand: "Omron CP/CJ/NX", software: "CX-Programmer / Sysmac", note: "เด่นด้าน Motion Control และ Safety", colour: "bg-green-50 text-green-700 border-green-200" },
-      { brand: "Delta DVP/AS Series", software: "ISPSoft / DIADesigner", note: "ราคาประหยัด เหมาะ SME และเครื่องจักรไทย", colour: "bg-teal-50 text-teal-700 border-teal-200" },
-      { brand: "Schneider Modicon", software: "EcoStruxure Control", note: "แข็งแกร่งด้าน Process และ Energy", colour: "bg-purple-50 text-purple-700 border-purple-200" },
-    ],
-  },
-  memory: {
-    tag: "จำให้ได้ก่อนเขียน Ladder",
-    title: "PLC Memory Map ทั่วไป",
-    subtitle: "แต่ละยี่ห้อตั้งชื่อต่างกัน แต่โครงสร้างเดียวกัน",
-    content:
-      "Memory Map คือแผนผังการจัดเก็บข้อมูลภายใน PLC การเข้าใจ Memory Map ทำให้เขียน Logic ได้ถูกต้อง อ่าน Program ของคนอื่นได้ และย้ายยี่ห้อ PLC ได้ง่ายขึ้น",
-    examples: [
-      { address: "I / X / DI / %I", name: "Digital Input", meaning: "เก็บสถานะ Input จาก Sensor, ปุ่มกด (TRUE/FALSE)" },
-      { address: "Q / Y / DO / %Q", name: "Digital Output", meaning: "สั่งงาน Output เช่น Motor Contactor, Solenoid Valve, Lamp" },
-      { address: "M / B / IR / %M", name: "Memory Bit", meaning: "เก็บค่าชั่วคราวใน Logic ไม่ต่อกับ Hardware โดยตรง" },
-      { address: "T / TIM", name: "Timer", meaning: "เก็บค่าเวลาที่กำลังนับของ TON / TOF / TP" },
-      { address: "C / CNT", name: "Counter", meaning: "นับจำนวน CTU (นับขึ้น) / CTD (นับลง)" },
-      { address: "D / N / %MW", name: "Data Register", meaning: "เก็บตัวเลข เช่น อุณหภูมิ ความเร็ว จำนวนชิ้นงาน Setpoint" },
-    ],
-  },
-  ladder: {
-    tag: "อ่านให้เป็นก่อนเขียน",
-    title: "Ladder Logic Symbol พื้นฐาน",
-    subtitle: "รู้จัก 5 Symbol นี้ก็เขียน Logic ได้ 80% แล้ว",
-    content:
-      "Ladder Logic ใช้ Symbol แทนการทำงานของวงจร ผู้ที่มีพื้นฐานไฟฟ้าจะเข้าใจได้รวดเร็ว เพราะออกแบบให้คล้ายกับ Wiring Diagram ของ Relay Control Panel ดั้งเดิม",
-    symbolList: [
-      { symbol: "| |", name: "NO Contact", desc: "Normally Open: ปกติวงจรเปิด เมื่อ Input ON วงจรจะปิดให้กระแสไหลผ่าน ใช้กับปุ่ม Start, Sensor", colour: "text-blue-400 border-blue-400" },
-      { symbol: "|/|", name: "NC Contact", desc: "Normally Closed: ปกติวงจรปิด เมื่อ Input ON วงจรจะเปิด กระแสหยุด ใช้กับ Stop, E-Stop, Overload", colour: "text-orange-400 border-orange-400" },
-      { symbol: "( )", name: "Output Coil", desc: "สั่ง Output ON ตราบที่มี Power Flow ถึง Coil ใช้สั่ง Motor, Valve, Lamp", colour: "text-green-400 border-green-400" },
-      { symbol: "(S)", name: "Set Coil", desc: "Set Output ให้ ON ค้างไว้ แม้ Input จะดับแล้ว ต้องใช้ Reset Coil เพื่อปิด", colour: "text-purple-400 border-purple-400" },
-      { symbol: "(R)", name: "Reset Coil", desc: "Reset Output ให้กลับเป็น OFF จาก Set ก่อนหน้า ใช้คู่กับ Set Coil", colour: "text-red-400 border-red-400" },
-    ],
-  },
+// ─── Level-specific Tab Content ──────────────────────────────────────────────
+const levelTabsData = {
+  "LEVEL 0": [
+    {
+      key: "overview", label: "PLC คืออะไร?",
+      tag: "เริ่มจากศูนย์",
+      title: "PLC คืออะไร?",
+      subtitle: "คอมพิวเตอร์อุตสาหกรรมที่โปรแกรมได้",
+      content: "PLC ย่อมาจาก Programmable Logic Controller คือคอมพิวเตอร์ที่ออกแบบมาสำหรับงานอุตสาหกรรมโดยเฉพาะ ทนทานต่อความร้อน ฝุ่น ความสั่นสะเทือน และคลื่นแม่เหล็กไฟฟ้า สามารถทำงานได้ตลอด 24 ชั่วโมง 7 วันต่อสัปดาห์",
+      analogy: "PLC คือสมอง, Sensor คือดวงตา, Push Button คือคำสั่งจากคน, Motor/Valve คือมือที่ลงมือทำงาน, Scan Cycle คือจังหวะการคิดของ PLC",
+      bullets: [
+        "PLC อ่านสถานะจาก Input: ปุ่มกด, Sensor, Limit Switch, Thermocouple",
+        "ประมวลผลตาม Logic ที่โปรแกรมไว้ เช่น Ladder, FBD, Structured Text",
+        "สั่ง Output: Motor, Lamp, Solenoid Valve, Buzzer, Display",
+        "ทำ Scan Cycle ซ้ำ ๆ ด้วยความเร็วสูง (1–10 ms ต่อรอบ)",
+      ],
+    },
+    {
+      key: "io", label: "Input / Output",
+      tag: "หัวใจของ PLC",
+      title: "Input / Output คืออะไร?",
+      subtitle: "PLC รับสัญญาณ → ประมวลผล → สั่งงาน",
+      content: "Input คือสัญญาณที่ PLC รับเข้ามาจากภายนอก เช่น ปุ่มกด, Sensor, Limit Switch ส่วน Output คือสัญญาณที่ PLC ส่งออกไปสั่งงาน เช่น Motor, Valve, Lamp",
+      bullets: [
+        "Digital Input (DI): สัญญาณ ON/OFF จากปุ่มกด, Proximity Sensor, Limit Switch",
+        "Digital Output (DO): สั่ง Motor Contactor, Solenoid Valve, Indicator Lamp",
+        "Analog Input (AI): วัดค่าต่อเนื่อง เช่น อุณหภูมิ ความดัน ความเร็ว (4-20mA)",
+        "Analog Output (AO): ควบคุม Inverter, Proportional Valve, Control Valve",
+      ],
+    },
+  ],
+  "LEVEL 1": [
+    {
+      key: "hardware", label: "PLC Hardware",
+      tag: "รู้จักก่อนใช้งาน",
+      title: "โครงสร้าง PLC Hardware",
+      subtitle: "CPU + Power Supply + I/O Module + Communication",
+      content: "PLC ประกอบด้วย CPU ที่ประมวลผล Logic, Power Supply จ่ายไฟ, I/O Module รับ-ส่งสัญญาณ, Communication Port เชื่อมต่อกับ Computer และระบบอื่น",
+      analogy: "Compact PLC คือ Notebook รวมทุกอย่างในตัวเดียว / Modular PLC คือ Desktop ที่เพิ่มการ์ดได้ตามต้องการ",
+      bullets: [
+        "CPU Module ประมวลผล Ladder Logic ทำ Scan Cycle 1–10 ms",
+        "Power Supply Module แปลงไฟ AC 220V → DC 24V สำหรับ PLC",
+        "Digital I/O Module รับ/ส่งสัญญาณ ON/OFF",
+        "Analog I/O Module รับ/ส่งสัญญาณ 4-20mA หรือ 0-10V",
+        "Communication: RS232, RS485, Ethernet, PROFIBUS, EtherNet/IP",
+      ],
+    },
+    {
+      key: "brands", label: "ยี่ห้อ PLC",
+      tag: "เลือกให้เหมาะกับงาน",
+      title: "PLC ยี่ห้อยอดนิยม",
+      subtitle: "แต่ละยี่ห้อมีจุดเด่นต่างกัน หลักการ Ladder เหมือนกัน",
+      content: "PLC มีหลายยี่ห้อในตลาด แต่ละยี่ห้อมีซอฟต์แวร์สำหรับเขียนโปรแกรมของตัวเอง เรียนรู้หลักการ Ladder Logic แล้ว สามารถย้ายไปยี่ห้ออื่นได้ไม่ยาก เพราะมาตรฐาน IEC 61131-3 ครอบคลุมทุกยี่ห้อ",
+      brandList: [
+        { brand: "Siemens S7-1200/1500", software: "TIA Portal", note: "นิยมมากในยุโรปและโรงงานไทยขนาดใหญ่", colour: "bg-blue-50 text-blue-700 border-blue-200" },
+        { brand: "Allen-Bradley / Rockwell", software: "Studio 5000", note: "มาตรฐานในอุตสาหกรรมอเมริกาและยานยนต์", colour: "bg-red-50 text-red-700 border-red-200" },
+        { brand: "Mitsubishi MELSEC", software: "GX Works3", note: "นิยมมากในไทย ราคาดี Support ดี", colour: "bg-orange-50 text-orange-700 border-orange-200" },
+        { brand: "Omron CP/CJ/NX", software: "CX-Programmer / Sysmac", note: "เด่นด้าน Motion Control และ Safety", colour: "bg-green-50 text-green-700 border-green-200" },
+        { brand: "Delta DVP/AS Series", software: "ISPSoft / DIADesigner", note: "ราคาประหยัด เหมาะ SME และเครื่องจักรไทย", colour: "bg-teal-50 text-teal-700 border-teal-200" },
+        { brand: "Schneider Modicon", software: "EcoStruxure Control", note: "แข็งแกร่งด้าน Process และ Energy", colour: "bg-purple-50 text-purple-700 border-purple-200" },
+      ],
+    },
+  ],
+  "LEVEL 2": [
+    {
+      key: "memory", label: "Memory Map",
+      tag: "จำให้ได้ก่อนเขียน Ladder",
+      title: "PLC Memory Map ทั่วไป",
+      subtitle: "แต่ละยี่ห้อตั้งชื่อต่างกัน แต่โครงสร้างเดียวกัน",
+      content: "Memory Map คือแผนผังการจัดเก็บข้อมูลภายใน PLC การเข้าใจ Memory Map ทำให้เขียน Logic ได้ถูกต้อง อ่าน Program ของคนอื่นได้ และย้ายยี่ห้อ PLC ได้ง่ายขึ้น",
+      examples: [
+        { address: "I / X / DI / %I", name: "Digital Input", meaning: "เก็บสถานะ Input จาก Sensor, ปุ่มกด (TRUE/FALSE)" },
+        { address: "Q / Y / DO / %Q", name: "Digital Output", meaning: "สั่งงาน Output เช่น Motor Contactor, Solenoid Valve, Lamp" },
+        { address: "M / B / IR / %M", name: "Memory Bit", meaning: "เก็บค่าชั่วคราวใน Logic ไม่ต่อกับ Hardware โดยตรง" },
+        { address: "T / TIM", name: "Timer", meaning: "เก็บค่าเวลาที่กำลังนับของ TON / TOF / TP" },
+        { address: "C / CNT", name: "Counter", meaning: "นับจำนวน CTU (นับขึ้น) / CTD (นับลง)" },
+        { address: "D / N / %MW", name: "Data Register", meaning: "เก็บตัวเลข เช่น อุณหภูมิ ความเร็ว จำนวนชิ้นงาน Setpoint" },
+      ],
+    },
+    {
+      key: "tags", label: "Tag Table",
+      tag: "ทำก่อนเขียนโปรแกรมทุกครั้ง",
+      title: "Tag Table คืออะไร และทำไมต้องมี?",
+      subtitle: "ตั้งชื่อ Address ให้มีความหมาย ก่อนเขียน Ladder",
+      content: "Tag Table คือตารางที่ตั้งชื่อสัญลักษณ์ให้กับ Memory Address แทนที่จะเขียน I0.0 หรือ D0 ก็ตั้งชื่อว่า Start_PB หรือ Tank_Level ทำให้ Logic อ่านเข้าใจง่ายขึ้น",
+      bullets: [
+        "ทำ Tag Table ก่อนเขียน Ladder ทุกครั้ง — เหมือนวางแผนก่อนลงมือ",
+        "ตั้งชื่อแบบ Meaningful: Start_PB, EStop, Motor_Run, Tank_Full",
+        "ระบุ Address, Data Type (BOOL/INT/REAL), Comment อธิบายหน้าที่",
+        "ช่วยให้ Maintenance ง่าย ทีมใหม่อ่าน Logic ออกได้เร็วขึ้น",
+        "ป้องกัน Address ซ้ำกัน ลด Bug ใน Logic ทั้งระบบ",
+      ],
+    },
+  ],
+  "LEVEL 3": [
+    {
+      key: "contact", label: "NO / NC Contact",
+      tag: "พื้นฐานที่สุดของ Ladder",
+      title: "NO และ NC Contact",
+      subtitle: "เข้าใจ 2 ตัวนี้แล้ว เขียน Logic ได้เลย",
+      content: "Contact คือสัญลักษณ์ที่แทนเงื่อนไขใน Ladder Logic มี 2 แบบหลัก คือ Normally Open (NO) และ Normally Closed (NC) เหมือน Contact ของ Relay ในวงจรไฟฟ้าทั่วไป",
+      analogy: "NO เหมือนปุ่ม Start: ปกติไม่ต่อ กดแล้วถึงต่อ / NC เหมือนปุ่ม Stop: ปกติต่ออยู่ กดแล้วตัด",
+      bullets: [
+        "NO (Normally Open) | | ปกติวงจรเปิด — เมื่อ Address ON วงจรจะปิด Power Flow ไหล",
+        "NC (Normally Closed) |/| ปกติวงจรปิด — เมื่อ Address ON วงจรจะเปิด Power Flow หยุด",
+        "ใช้ NO กับ: ปุ่ม Start, Proximity Sensor, Limit Switch ตรวจชิ้นงาน",
+        "ใช้ NC กับ: ปุ่ม Stop, E-Stop, Overload Relay, Safety Switch",
+      ],
+    },
+    {
+      key: "ladder", label: "Ladder Symbol",
+      tag: "อ่านให้เป็นก่อนเขียน",
+      title: "Ladder Logic Symbol พื้นฐาน",
+      subtitle: "รู้จัก 5 Symbol นี้ก็เขียน Logic ได้ 80% แล้ว",
+      content: "Ladder Logic ใช้ Symbol แทนการทำงานของวงจร ผู้ที่มีพื้นฐานไฟฟ้าจะเข้าใจได้รวดเร็ว เพราะออกแบบให้คล้ายกับ Wiring Diagram ของ Relay Control Panel ดั้งเดิม",
+      symbolList: [
+        { symbol: "| |", name: "NO Contact", desc: "Normally Open: ปกติวงจรเปิด เมื่อ Input ON วงจรจะปิดให้กระแสไหลผ่าน ใช้กับปุ่ม Start, Sensor", colour: "text-blue-400 border-blue-400" },
+        { symbol: "|/|", name: "NC Contact", desc: "Normally Closed: ปกติวงจรปิด เมื่อ Input ON วงจรจะเปิด กระแสหยุด ใช้กับ Stop, E-Stop, Overload", colour: "text-orange-400 border-orange-400" },
+        { symbol: "( )", name: "Output Coil", desc: "สั่ง Output ON ตราบที่มี Power Flow ถึง Coil ใช้สั่ง Motor, Valve, Lamp", colour: "text-green-400 border-green-400" },
+        { symbol: "(S)", name: "Set Coil", desc: "Set Output ให้ ON ค้างไว้ แม้ Input จะดับแล้ว ต้องใช้ Reset Coil เพื่อปิด", colour: "text-purple-400 border-purple-400" },
+        { symbol: "(R)", name: "Reset Coil", desc: "Reset Output ให้กลับเป็น OFF จาก Set ก่อนหน้า ใช้คู่กับ Set Coil", colour: "text-red-400 border-red-400" },
+      ],
+    },
+  ],
+  "LEVEL 4": [
+    {
+      key: "ton", label: "TON / TOF / TP",
+      tag: "ควบคุมเวลาอัตโนมัติ",
+      title: "Timer ใน PLC มี 3 แบบ",
+      subtitle: "TON, TOF, TP — แต่ละแบบเหมาะงานต่างกัน",
+      content: "Timer คือ Function Block ที่ช่วยหน่วงเวลาหรือสร้าง Pulse โดยอัตโนมัติ ไม่ต้องใช้คนกดปุ่ม PLC ทุกยี่ห้อมี Timer แม้ชื่อจะต่างกัน หลักการเดียวกันทั้งหมด",
+      analogy: "TON เหมือนเครื่องซักผ้า: กดสตาร์ทแล้วรอ 45 นาทีถึงจะส่งเสียง / TOF เหมือนพัดลมในห้องน้ำ: ปิดไฟแล้วพัดลมยังทำงานต่ออีก 1 นาที",
+      bullets: [
+        "TON (On-Delay): IN ON → นับเวลา → ครบ PT → Q เป็น ON ใช้หน่วงก่อนเปิด Motor",
+        "TOF (Off-Delay): IN OFF → นับเวลา → ครบ PT → Q เป็น OFF ใช้กับพัดลมระบาย",
+        "TP (Pulse): IN ON → Q เป็น ON นาน PT วินาที → ดับอัตโนมัติ",
+        "ET คือ Elapsed Time เวลาที่นับแล้ว, PT คือ Preset Time เวลาที่ตั้ง",
+        "ชื่อใน PLC: TON(IEC/Siemens) = TIM(Omron) = TMR(Mitsubishi) = T(Delta)",
+      ],
+    },
+    {
+      key: "counter", label: "Counter CTU / CTD",
+      tag: "นับชิ้นงานอัตโนมัติ",
+      title: "Counter ใน PLC",
+      subtitle: "CTU นับขึ้น / CTD นับลง / CTUD นับขึ้น-ลง",
+      content: "Counter ใช้นับจำนวนชิ้นงาน นับรอบการทำงาน หรือนับสัญญาณ Pulse จาก Encoder ทุกครั้งที่ CU Input เปลี่ยนจาก OFF→ON ค่า CV จะเพิ่มขึ้น 1 หน่วย",
+      bullets: [
+        "CTU (Count Up): นับขึ้นทุกครั้งที่ CU = Rising Edge เมื่อ CV ≥ PV → Q ON",
+        "CTD (Count Down): นับลงทุกครั้งที่ CD = Rising Edge เมื่อ CV ≤ 0 → Q ON",
+        "CTUD: นับขึ้น-ลงในตัวเดียว ใช้กับ Stock Management นับเข้า-ออก",
+        "R (Reset): รีเซ็ต CV กลับ 0 ต้องทำทุกครั้งหลังครบรอบการผลิต",
+        "ใช้งานจริง: นับขวดบน Conveyor, นับรอบ Motor, นับชิ้นงานที่ผ่าน Sensor",
+      ],
+    },
+  ],
+  "LEVEL 5": [
+    {
+      key: "motor", label: "Motor Control",
+      tag: "วงจรพื้นฐานโรงงาน",
+      title: "Motor Control Circuit แบบ PLC",
+      subtitle: "Start/Stop + Seal-in + Safety Interlock",
+      content: "วงจร Motor Control พื้นฐานที่ใช้ในโรงงานทุกแห่ง ประกอบด้วย Start Button, Stop Button, E-Stop, Overload Protection และ Seal-in Circuit เพื่อให้ Motor ทำงานต่อเนื่องได้",
+      bullets: [
+        "Seal-in (Self-Holding): Motor_Run Coil ต่อ NO Contact ของตัวเองเป็น Parallel กับ Start",
+        "E-Stop: NC Contact ต่อ Series บังคับให้หยุดทันที ไม่ว่า Logic จะเป็นอย่างไร",
+        "Overload Protection: NC Contact จาก Thermal Overload Relay ป้องกันกระแสเกิน",
+        "Interlock: ป้องกัน Motor 2 ตัวทำงานพร้อมกัน เช่น Forward/Reverse",
+        "Hand-Off-Auto Switch: เลือก Mode Manual โดยคน หรือ Auto โดย PLC",
+      ],
+    },
+    {
+      key: "conveyor", label: "Conveyor System",
+      tag: "Case Study โรงงาน",
+      title: "Conveyor Automation System",
+      subtitle: "Sequence Control และ Interlock จากงานจริง",
+      content: "ระบบ Conveyor เป็นหนึ่งในระบบที่ PLC ควบคุมมากที่สุดในโรงงาน ต้องการ Sequence Control ที่ชัดเจน Interlock ป้องกันความเสียหาย และ Alarm System",
+      bullets: [
+        "Sequence: เปิด Conveyor 1 ก่อน → รอ 2 วิ → เปิด Conveyor 2 → รอ 2 วิ → เปิด Conveyor 3",
+        "Interlock: ถ้า Conveyor ปลายทางหยุด ให้หยุด Conveyor ต้นทางด้วย ป้องกัน Overflow",
+        "Speed Control: ใช้ Inverter ควบคุมความเร็ว PLC ส่งค่า AO 4-20mA",
+        "Jam Detection: ถ้า Motor Load เกิน Setpoint → หยุดและแจ้งเตือน Alarm",
+        "Remote I/O: ใช้ PROFIBUS หรือ EtherNet/IP เชื่อมต่อ I/O ที่อยู่ห่างไกล",
+      ],
+    },
+  ],
+  "LEVEL 6": [
+    {
+      key: "debug", label: "Debug Process",
+      tag: "ไล่บัคอย่างมืออาชีพ",
+      title: "กระบวนการ Troubleshooting PLC",
+      subtitle: "ไล่จาก Logic → Wiring → Hardware เป็นลำดับ",
+      content: "เมื่อเครื่องจักรมีปัญหา วิศวกรที่ดีจะไล่ตรวจสอบอย่างมีระบบ ไม่ใช่เดาสุ่ม เริ่มจากดู Fault Code ของ PLC → Online Monitoring → ตรวจ Logic → ตรวจ Wiring → ตรวจ Hardware",
+      bullets: [
+        "Step 1: อ่าน Fault Code / Error ของ PLC ก่อนเสมอ — มักบอกสาเหตุได้เลย",
+        "Step 2: Online Monitoring ดูสถานะ I/O จริงใน PLC ขณะระบบทำงาน",
+        "Step 3: ไล่ Power Flow ใน Ladder หา Contact ที่ดับอยู่",
+        "Step 4: วัดสัญญาณที่ Terminal Block ของ PLC I/O Module",
+        "Step 5: ตรวจ Field Device เช่น Sensor, Actuator, Wiring, Connector",
+      ],
+    },
+    {
+      key: "monitor", label: "Online Monitoring",
+      tag: "เครื่องมือสำคัญที่สุด",
+      title: "Online Monitoring คืออะไร?",
+      subtitle: "ดูสถานะ PLC แบบ Real-time ขณะเครื่องทำงาน",
+      content: "Online Monitoring คือการเชื่อมต่อ Programming Software กับ PLC ขณะทำงาน เพื่อดู Power Flow สถานะ I/O ค่า Timer Counter และแก้ไข Value ได้แบบ Real-time",
+      bullets: [
+        "Power Flow แสดงว่า Logic ไหลผ่าน Contact ใดบ้างในขณะนั้น (เส้นสีเขียว)",
+        "Force I/O บังคับ Input/Output เพื่อทดสอบ Logic โดยไม่ต้องต่อ Field Device",
+        "Watch Table มอนิเตอร์ค่า Address หลายตำแหน่งพร้อมกัน เปลี่ยนค่าได้",
+        "Diagnostics Buffer บันทึก Error/Event ตามลำดับเวลา ใช้หา Root Cause",
+        "Online Modify แก้ไข Logic ขณะ PLC ทำงานได้ (ต้องระวังเรื่อง Safety)",
+      ],
+    },
+  ],
+  "LEVEL 7": [
+    {
+      key: "project", label: "Mini Project Spec",
+      tag: "สรุปทุกอย่างที่เรียนมา",
+      title: "Conveyor Sorting System",
+      subtitle: "ออกแบบ I/O List → เขียน Ladder → ทดสอบ → จบ",
+      content: "Mini Project คือการนำทุกทักษะที่เรียนมาใช้งานจริง ออกแบบระบบ Conveyor ที่คัดแยกชิ้นงานตามขนาด โดยมี Sensor ตรวจ, Motor ขับเคลื่อน, Pneumatic Valve คัดแยก และ Counter นับชิ้นงาน",
+      bullets: [
+        "I/O List: กำหนด DI 8 จุด (Sensor, PB, E-Stop), DO 6 จุด (Motor, Valve, Lamp)",
+        "Tag Table: ตั้งชื่อทุก Address ก่อนเขียน Logic",
+        "Ladder Logic: Start/Stop, Sorting Sequence, Counter, Alarm",
+        "HMI Screen: แสดงสถานะ Motor, นับชิ้นงาน, ปุ่ม Start/Stop",
+        "Test Plan: ทดสอบแต่ละ Function ก่อน Run ระบบทั้งหมด",
+      ],
+    },
+    {
+      key: "cert", label: "Final Exam & Certificate",
+      tag: "ก้าวสุดท้าย",
+      title: "Final Exam และ Certificate",
+      subtitle: "ทดสอบความรู้ 40 ข้อ ผ่าน 70% รับ Certificate",
+      content: "Final Exam ครอบคลุมเนื้อหาทุก Level ตั้งแต่ PLC Hardware, Memory Map, Ladder Logic, Timer/Counter, Case Study และ Troubleshooting ผ่านแล้วรับ Certificate ดิจิทัล",
+      bullets: [
+        "40 ข้อ ครอบคลุมทุก Level เวลา 60 นาที",
+        "ผ่าน 70% (28/40) ขึ้นไป รับ Certificate of Completion",
+        "Certificate มี QR Code สำหรับตรวจสอบความถูกต้องออนไลน์",
+        "ใส่ใน LinkedIn Profile, Resume, Portfolio ได้ทันที",
+        "รับผล Certificate ทาง Email ภายใน 24 ชั่วโมง",
+      ],
+    },
+  ],
 };
 
 // ─── Quiz Questions ───────────────────────────────────────────────────────────
@@ -399,8 +583,17 @@ export default function PLCLearningApp() {
   const [answered, setAnswered] = useState(false);
 
   // Lesson tabs & level
-  const [activeTab, setActiveTab] = useState("intro");
+  const [activeTab, setActiveTab] = useState("overview");
   const [selectedLevel, setSelectedLevel] = useState(courseLevels[0]);
+
+  // Reset active tab when level changes
+  useEffect(() => {
+    const tabs = levelTabsData[selectedLevel.level];
+    if (tabs?.length) setActiveTab(tabs[0].key);
+  }, [selectedLevel]);
+
+  // Current tabs and content for selected level
+  const currentTabs = levelTabsData[selectedLevel.level] || [];
 
   // Computed
   const motorRunning = start && !stop && !estop && !overload;
@@ -425,7 +618,7 @@ export default function PLCLearningApp() {
     return "Motor ยังหยุดอยู่ ลองกด Start โดยที่ Stop / E-Stop / Overload ไม่ Active";
   }, [estop, overload, stop, motorRunning]);
 
-  const activeContent = lessonTabs[activeTab];
+  const activeContent = currentTabs.find((t) => t.key === activeTab) || currentTabs[0] || {};
 
   // Timer interval
   useEffect(() => {
@@ -613,12 +806,12 @@ export default function PLCLearningApp() {
               <CardContent className="p-6 space-y-5">
                 <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
                   <div>
-                    <p className="text-sm font-medium text-blue-600">ตัวอย่างบทเรียน</p>
-                    <h2 className="text-2xl font-bold">เนื้อหาพื้นฐาน PLC</h2>
+                    <p className="text-sm font-medium text-blue-600">{selectedLevel.level} • เนื้อหาประจำ Level</p>
+                    <h2 className="text-2xl font-bold">{selectedLevel.title}</h2>
                     <p className="text-slate-600 text-sm mt-1">กดเปลี่ยนหัวข้อเพื่อดูเนื้อหา</p>
                   </div>
                   <div className="flex flex-wrap gap-1 bg-slate-100 rounded-2xl p-1">
-                    {[["intro","PLC พื้นฐาน"],["brands","ยี่ห้อ PLC"],["memory","Memory Map"],["ladder","Ladder Symbol"]].map(([key, label]) => (
+                    {currentTabs.map(({ key, label }) => (
                       <button key={key} onClick={() => setActiveTab(key)} className={`px-3 py-2 rounded-xl text-sm font-medium transition ${activeTab === key ? "bg-white shadow-sm text-blue-700" : "text-slate-500 hover:text-slate-700"}`}>{label}</button>
                     ))}
                   </div>
